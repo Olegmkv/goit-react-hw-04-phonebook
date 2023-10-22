@@ -5,37 +5,37 @@ import { ContactList } from './ContactList/ContactList';
 import { Filter } from './Filter/Filter';
 import { Layout } from './Layout';
 
+// зберігання даних в локальному сховищі
+const save = (key, value) => {
+  try {
+    const serializedState = JSON.stringify(value);
+    localStorage.setItem(key, serializedState);
+  } catch (error) {
+    console.error('Set state error: ', error.message);
+  }
+};
+
+// завантаження даних з локального сховища
+const load = key => {
+  try {
+    const serializedState = localStorage.getItem(key);
+    return serializedState === null ? undefined : JSON.parse(serializedState);
+  } catch (error) {
+    console.error('Get state error: ', error.message);
+  }
+};
+
+// початкове заповнення масиву контактів зі сховища
+const initContacts = () => {
+  const phoneContacts = load('phoneContacts');
+  return phoneContacts ? phoneContacts : []
+};
+
 export const App = () => {
-
-  // зберігання даних в локальному сховищі
-  const save = (key, value) => {
-    try {
-      const serializedState = JSON.stringify(value);
-      localStorage.setItem(key, serializedState);
-    } catch (error) {
-      console.error('Set state error: ', error.message);
-    }
-  };
-
-  // завантаження даних з локального сховища
-  const load = key => {
-    try {
-      const serializedState = localStorage.getItem(key);
-      return serializedState === null ? undefined : JSON.parse(serializedState);
-    } catch (error) {
-      console.error('Get state error: ', error.message);
-    }
-  };
-
-  // початкове заповнення масиву контактів зі сховища
-  const initContacts = () => {
-    const phoneContacts = load('phoneContacts');
-    return phoneContacts ? phoneContacts : []
-  };
 
   // ініціалізація станів
   const [filter, setFilter] = useState('');
-  const [contacts, setContacts] = useState(initContacts);
+  const [contacts, setContacts] = useState(() => initContacts());
 
   // збереження контактів при зміні кількості
   useEffect(() => {
